@@ -1,17 +1,24 @@
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang3.time.StopWatch;
 
 public class Jobs {
 
 	private List<String> jobs;
+	private List<String> jobsSoundsLike;
 	private StopWatch stopWatch;
-	
-	public List<String> ContainsExact(String queryStr)  {
+	private DoubleMetaphone soundsLike;
+
+	public Jobs() {
+		createJobs();
+		createJobsSoundsLike();
+	}
+
+	public List<String> ContainsExact(String queryStr) {
 		stopWatch.reset();
 		stopWatch.start();
 		List<String> result = new ArrayList<String>();
@@ -19,24 +26,73 @@ public class Jobs {
 			if (isMatched(queryStr, std)) {
 				result.add(std);
 			}
-			
+
 		});
 		stopWatch.stop();
-		System.out.println("ContainsExact time: " +stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms" );
+		System.out.println("ContainsExact time: " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms");
 		return result;
 	}
-	
+
+	public List<String> ContainsSoundsLike(String queryStr) {
+		stopWatch.reset();
+		stopWatch.start();
+		List<String> result = new ArrayList<String>();
+		jobs.forEach(std -> {
+			if (isSoundsLike(queryStr, std)) {
+				result.add(std);
+			}
+
+		});
+		stopWatch.stop();
+		System.out.println("ContainsSoundsLike time: " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms");
+		return result;
+	}
+
+	public List<String> ContainsSoundsLike2(String queryStr) {
+		stopWatch.reset();
+		stopWatch.start();
+		List<String> result = new ArrayList<String>();
+		jobsSoundsLike.forEach(std -> {
+			if (isSoundsLike2(queryStr, std)) {
+				result.add(std);
+			}
+
+		});
+		stopWatch.stop();
+		System.out.println("ContainsSoundsLike2 time: " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms");
+		return result;
+	}
+
 	private static boolean isMatched(String query, String text) {
-        return text.toLowerCase().contains(query.toLowerCase());
-    }
-	
+		return text.toLowerCase().contains(query.toLowerCase());
+	}
+
+	private boolean isSoundsLike(String query, String text) {
+		String q = soundsLike.doubleMetaphone(query);
+		String t = soundsLike.doubleMetaphone(text);
+		return t.contains(q);
+	}
+
+	private boolean isSoundsLike2(String query, String text) {
+		String q = soundsLike.doubleMetaphone(query);
+		return text.contains(q);
+	}
+
 	public int size() {
 		return jobs.size();
 	}
-	
-	public Jobs() {
+
+	private void createJobsSoundsLike() {
+		jobsSoundsLike = new ArrayList<String>();
+		jobs.forEach(it -> {
+			jobsSoundsLike.add(soundsLike.doubleMetaphone(it));
+		});
+	}
+
+	private void createJobs() {
 		stopWatch = new StopWatch();
 		jobs = new ArrayList<String>();
+		soundsLike = new DoubleMetaphone();
 		jobs.add("Aboriginal and Torres Strait Islander Education Worker");
 		jobs.add("Aboriginal and Torres Strait Islander Education Worker");
 		jobs.add("Aboriginal and Torres Strait Islander Health Worker");
@@ -1036,11 +1092,10 @@ public class Jobs {
 		jobs.add("Youth Worker");
 		jobs.add("Zookeeper");
 		jobs.add("Zoologist");
-		
+
 		jobs.addAll(jobs);
 		jobs.addAll(jobs);
-		
 
 	}
-	
+
 }
