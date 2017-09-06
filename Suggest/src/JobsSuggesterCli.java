@@ -29,7 +29,7 @@ public class JobsSuggesterCli {
 		do {
 			System.out.print("Enter partial job name orq to quit : ");
 			query = scanner.nextLine();
-			testContainsExact(query);
+			//testContainsExact(query);
 			testContainsSoundsLike(query);
 		} while (query != "q");
 		scanner.close();
@@ -37,19 +37,18 @@ public class JobsSuggesterCli {
 
 	public static void testContainsSoundsLike(String query) {
 		List<String> suggestions = js.ContainsSoundsLike(query);
-		
-		suggestions.forEach(it -> {
-			System.out.println(it);
-			
-		});
+		suggestions.forEach(it -> { System.out.println(it); });
+		 System.out.println();
+		suggestions = js.orderSuggestions(suggestions, query);
+		suggestions.forEach(it -> { System.out.println(it); });
 		//System.out.println("found " + suggestions.size());
+		 System.out.println();
 	}
-
-	
 
 	public static void testContainsExact(String query) {
 		
 		List<String> suggestions = js.ContainsExact(query);
+		suggestions = js.orderSuggestions(suggestions, query);
 		suggestions.forEach(it -> { System.out.println(it); });
 		//System.out.println("found " + suggestions.size());
 	}
