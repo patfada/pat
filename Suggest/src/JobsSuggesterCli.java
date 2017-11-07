@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,50 +8,28 @@ public class JobsSuggesterCli {
 	private static Suggester js;
 
 	public static void main(String[] args) {
-		
-		js = new Suggester(new JobTitles().getJobTitlesList());
-/*
-		testContainsExact("cook");
-		testContainsExact("Engineer");
-		testContainsExact("Builder");
-		testContainsExact("garden");
-		testContainsExact("house");
 
-		testContainsSoundsLike("cook");
-		testContainsSoundsLike("Engineer");
-		testContainsSoundsLike("Builder");
-		testContainsSoundsLike("garden");
-		testContainsSoundsLike("house");
+		// js = new Suggester(new JobTitles().getJobTitlesList());
+		List<String> test = new ArrayList<String>();
+		test.add("karitane gardener");
+		test.add("fitter Welder");
+		test.add("software Engineer");
+		test.add("vege gardener");
+		js = new Suggester(test);
 
-*/
 		String query;
 		System.out.println("dictionary size = " + js.size());
 		Scanner scanner = new Scanner(System.in);
 		do {
-			System.out.print("Enter partial job name orq to quit : ");
+			System.out.print("Enter partial job name or q to quit : ");
 			query = scanner.nextLine();
-			//testContainsExact(query);
-			testContainsSoundsLike(query);
+			List<String> suggestions = js.suggest(query);
+			suggestions.forEach(it -> {
+				System.out.println(it);
+			});
+			System.out.println();
 		} while (query != "q");
 		scanner.close();
-	}
-
-	public static void testContainsSoundsLike(String query) {
-		List<String> suggestions = js.ContainsSoundsLike(query);
-		suggestions.forEach(it -> { System.out.println(it); });
-		 System.out.println();
-		suggestions = js.orderSuggestions(suggestions, query);
-		suggestions.forEach(it -> { System.out.println(it); });
-		//System.out.println("found " + suggestions.size());
-		 System.out.println();
-	}
-
-	public static void testContainsExact(String query) {
-		
-		List<String> suggestions = js.ContainsExact(query);
-		suggestions = js.orderSuggestions(suggestions, query);
-		suggestions.forEach(it -> { System.out.println(it); });
-		//System.out.println("found " + suggestions.size());
 	}
 
 }
